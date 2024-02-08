@@ -1,5 +1,7 @@
 const Culqi = window.Culqi;
+
 Culqi.publicKey = 'pk_test_c84e30cedf9d0715';
+
 Culqi.settings({
     title: 'Culqi Store',
     currency: 'PEN',  // Este parámetro es requerido para realizar pagos yape
@@ -21,51 +23,60 @@ Culqi.options({
   });
 Culqi.init();
 
+
+const ubid = require( 'ubid' );
+let buyyerId = "";
+ubid.get( function( error, signatureData ) {
+    if ( error ) {
+        console.error( error );
+        return;
+    }
+    buyyerId = signatureData.browser.signature;
+});
+
 const btn_pay = document.getElementById('payWithYape');
 
 btn_pay.addEventListener('click', function (e) {
     Culqi.open();
     e.preventDefault();
-})
+});
+
+async function getTokenPay(culqiId) {
+    try {
+        let _data = {
+            movieId: 22,
+            buyerId: buyyerId,
+            culqiId: culqiId,
+            price: 6
+        }    
+        const response = await fetch('http://localhost:3000/api/movierented', {
+            method: 'POST',
+            headers: {
+                accept: 'application/json',
+            },
+            body: JSON.stringify(_data) 
+        });
+    
+        if (!response.ok) {
+            throw new Error(`Error! status: ${response.status}`);
+        }
+    
+        const result = await response.json();
+        console.log(result.token);
+        return result;
+    } catch (err) {
+      console.log(err);
+    }
+}
+
+
 
 function culqi() {
     if (Culqi.token) {  // ¡Objeto Token creado exitosamente!
         const culqiId = Culqi.token.id;
         console.log('Se ha creado un Token: ', culqiId);
         
-        let _data = {
-            movieId: 29,
-            buyerId: culqiId,
-            culqiId: culqiId,
-            price: 6
-        }
-
-        async function postData(url = '', data = {}) {
-            // Opciones por defecto estan marcadas con un *
-            const response = await fetch(url, {
-              method: 'POST', // *GET, POST, PUT, DELETE, etc.
-              cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
-              mode: 'no-cors',
-              rejectUnauthorized:false,
-              headers: {
-                'Content-Type': 'application/json',
-                'Access-Control-Allow-Origin': '*'
-              },
-              redirect: 'follow', // manual, *follow, error
-              referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-              body: JSON.stringify(data) // body data type must match "Content-Type" header
-            });
-            return response.json(); // parses JSON response into native JavaScript objects
-        }
-
-        const apiUrl = 'https://api.cursosya.info/api/movierented'
-        const corsAnywhere = 'https://cors-anywhere.herokuapp.com/';
-
-        postData(apiUrl, _data)
-        .then(data => {
-            console.log(data); // JSON data parsed by `data.json()` call
-            Culqi.close();
-        });
+        getTokenPay(culqiId);
           
         // fetch('http://localhost:3000/api/movierented', {
         //     method: "POST",
@@ -86,3 +97,13 @@ function culqi() {
         console.log('Error : ',Culqi.error);
     }
 };
+
+function generate_token(length){
+    var a = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890".split("");
+    var b = [];  
+    for (var i=0; i<length; i++) {
+        var j = (Math.random() * (a.length-1)).toFixed(0);
+        b[i] = a[j];
+    }
+    return b.join("");
+}

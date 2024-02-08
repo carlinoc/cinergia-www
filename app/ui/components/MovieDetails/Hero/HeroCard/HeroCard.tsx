@@ -88,8 +88,8 @@ export function HeroCard({ movieData }: HeroCardProps): JSX.Element {
           />
         </VideoPlayerModal>
       ) : null}
-      <Script src="https://checkout.culqi.com/js/v4" strategy="beforeInteractive" />
-      <Script src="/static/main.js" />
+      <Script src="https://sandbox-checkout.izipay.pe/payments/v1/js/index.js" strategy="beforeInteractive" />
+      <Script src="/static/izipay.js" />
     </>
   );
 }

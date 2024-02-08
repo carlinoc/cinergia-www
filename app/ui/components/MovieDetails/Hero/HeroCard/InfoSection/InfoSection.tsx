@@ -197,6 +197,7 @@ export function InfoSection({ movieData }: InfoSectionProps): JSX.Element {
             >
               Pago con Yape
             </button>
+            <div id='payment-message'></div>
           </article>
         </section>
         <section className="hidden col-span-1 lg:col-span-2 self-end md:grid md:grid-cols-1 lg:grid-cols-2 gap-8">
