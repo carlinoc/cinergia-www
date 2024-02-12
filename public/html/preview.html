@@ -1,0 +1,29 @@
+<div class="container" style="height: 600px;">
+    <div id="video-player"></div>
+</div>
+<div class="footer" style="height: 100px; text-align: center; margin-top: 50px;">
+  <button type="button" id="btnPlay">PLAY</button>
+</div>
+<script src="https://muse.ai/static/js/embed-player.min.js"></script>
+<script>
+  const player = MusePlayer({
+    container: document.getElementById('video-player'),
+    video: 'jP5rmkx',
+    autoplay: true,
+    loop: false,
+    sizing: 'fit',
+    title: false,
+    search: false,
+    links: false,
+    logo: false
+  });
+
+  player.on('ended', function() {
+    player.setVideo('9Hdap75');
+  });
+
+  let btn = document.getElementById('btnPlay');
+  btn.addEventListener("click", function () {
+    player.play();
+  });
+</script>
